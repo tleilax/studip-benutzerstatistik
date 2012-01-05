@@ -1,0 +1,6 @@
+pluginname=Benutzerstatistik
+pluginclassname=BenutzerStatistik
+dbscheme=sql/install.sql
+origin=UOL
+version=2.4.4.1
+studipMinVersion=2.0
