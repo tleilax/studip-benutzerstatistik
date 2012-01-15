@@ -97,7 +97,6 @@ class GraphsController extends StudipController
         $totals['headcount'] = DBManager::Get()->query("SELECT MAX(headcount)+0 FROM (SELECT COUNT(DISTINCT hash) AS headcount FROM user_statistics WHERE daystamp BETWEEN FROM_UNIXTIME(".mktime(0,0,0,$month,1,$year).") AND FROM_UNIXTIME(".(mktime(0,0,0,$month+1,1,$year)-1).") UNION SELECT unique_visits AS headcount FROM user_statistics_monthly WHERE month_stamp=LAST_DAY(FROM_UNIXTIME(".mktime(0,0,0,$month,1,$year)."))) AS tmp_table")->fetchColumn();
 
         $this->type = empty($_REQUEST['type']) ? 'visits' : $_REQUEST['type'];
-        $this->id = $id;
         $this->months = $months;
         $this->month_stamp = mktime(0,0,0, $month, 1, $year);
         $this->stats = $stats;
@@ -289,6 +288,7 @@ class GraphsController extends StudipController
         $average /= count($months);
         $average_headcount /= count($head_count);
 
+        $this->id = $id;
         $this->months = $months;
         $this->total = $total;
         $this->max = $max;
