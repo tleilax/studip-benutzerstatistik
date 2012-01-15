@@ -118,14 +118,10 @@ class BenutzerStatistik extends StudipPlugin implements SystemPlugin {
             return;
         }
 
-        $navigation = new AutoNavigation('Überwachte URLs');
-        $navigation->setURL(PluginEngine::getURL('benutzerstatistik/graphs/tracked'));
-        Navigation::addItem('/benutzerstatistik/graphs/tracked', $navigation);
-
         foreach ($this->get_tracked_urls() as $id => $url) {
             $navigation = new AutoNavigation($url['description']);
             $navigation->setURL(PluginEngine::getURL('benutzerstatistik/graphs/tracked/'.$id));
-            Navigation::addItem('/benutzerstatistik/graphs/tracked/'.$id, $navigation);
+            Navigation::addItem('/benutzerstatistik/graphs/tracked-'.$id, $navigation);
         }
     }
 
