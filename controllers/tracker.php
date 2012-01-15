@@ -2,14 +2,15 @@
 class TrackerController extends StudipController {
 
     public function sniff_action($width, $height) {
-        $statement = DBManager::Get()->prepare("UPDATE `user_statistics` SET `javascript` = 1, `screen_width` = ?, `screen_height` = ? WHERE `ip` = MD5(INET_ATON(?)) AND `user_agent` = ? AND TRIM(`hash`) = ? AND `daystamp` = CURDATE()");
-        $statement->execute(array(
-            (int)$width,
-            (int)$height,
-            $_SERVER['REMOTE_ADDR'],
-            empty($_SERVER['HTTP_USER_AGENT']) ? '?' : $_SERVER['HTTP_USER_AGENT'],
-            md5($GLOBALS['auth']->auth['uid'].$GLOBALS['auth']->auth['uname']),
-        ));
+        DBManager::Get()
+            ->prepare("UPDATE `user_statistics` SET `javascript` = 1, `screen_width` = ?, `screen_height` = ? WHERE `ip` = MD5(INET_ATON(?)) AND `user_agent` = ? AND TRIM(`hash`) = ? AND `daystamp` = CURDATE()")
+            ->execute(array(
+                (int)$width,
+                (int)$height,
+                $_SERVER['REMOTE_ADDR'],
+                empty($_SERVER['HTTP_USER_AGENT']) ? '?' : $_SERVER['HTTP_USER_AGENT'],
+                md5($GLOBALS['auth']->auth['uid'].$GLOBALS['auth']->auth['uname']),
+            ));
 
         $_SESSION['BENUTZERSTATISTIK']['js'] = true;
 
@@ -22,19 +23,22 @@ class TrackerController extends StudipController {
         // Get URL
         $statement = DBManager::Get()->prepare("SELECT url FROM user_statistics_tracked_urls_config WHERE url_id = ?");
         $statement->execute(array($id));
-        $url = $statement->fetch(PDO::FETCH_COLUMN);
+        $this->url = $statement->fetch(PDO::FETCH_COLUMN);
 
+/*
         // Redirect
-        if (!headers_sent())
+        if (!headers_sent()) {
             Header('Location: '.$url);
-        else
+        } else {
             echo '<script type="text/javascript">location.href="'.$url.'";</script><noscript><meta http-equiv="Refresh" content="0;URL='.$url.'" /></noscript>';
+        }
 
         // Prevent output
         $this->render_nothing();
-
+*/
         // Store hit
-        $statement = DBManager::get()->prepare("INSERT DELAYED INTO `user_statistics_tracked_urls` (`url_id`, `user_hash`, `daystamp`, `clicks`) VALUES (?, MD5(?), NOW(), 1) ON DUPLICATE KEY UPDATE `clicks` = `clicks` + 1");
-        $statement->execute(array($id, $GLOBALS['auth']->auth['uid']));
+        DBManager::get()
+            ->prepare("INSERT DELAYED INTO `user_statistics_tracked_urls` (`url_id`, `user_hash`, `daystamp`, `clicks`) VALUES (?, MD5(?), NOW(), 1) ON DUPLICATE KEY UPDATE `clicks` = `clicks` + 1")
+            ->execute(array($id, $GLOBALS['auth']->auth['uid']));
     }
 }

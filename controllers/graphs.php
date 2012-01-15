@@ -15,7 +15,7 @@ class GraphsController extends StudipController
 
         PageLayout::setTitle('Benutzerstatistik - Graphen');
         if ($action == 'tracked')
-            Navigation::activateItem('/benutzerstatistik/graphs/tracked-'.Request::int('id', reset($args)));
+            Navigation::activateItem('/benutzerstatistik/graphs/tracked/'.Request::int('id'));
         else
             Navigation::activateItem('/benutzerstatistik/graphs/'.$action);
 
@@ -288,7 +288,6 @@ class GraphsController extends StudipController
         $average /= count($months);
         $average_headcount /= count($head_count);
 
-        $this->id = $id;
         $this->months = $months;
         $this->total = $total;
         $this->max = $max;

@@ -7,7 +7,8 @@
     <thead>
         <tr>
             <th colspan="4">
-                <form action="<?= PluginEngine::getLink('benutzerstatistik/graphs/tracked/'.$id) ?>" method="get" id="stat_form" style="float: right;">
+                <form action="<?= PluginEngine::getLink('benutzerstatistik/graphs/tracked') ?>" method="get" id="stat_form" style="float: right;">
+                    <input type="hidden" name="id" value="<?= Request::int('id') ?>" />
                     <select name="year">
                     <?php foreach ($years as $name): ?>
                         <option value="<?= $name ?>" <?= $name==$year ? 'selected="selected"' : '' ?>>
