@@ -15,7 +15,7 @@ class GraphsController extends StudipController
 
         PageLayout::setTitle('Benutzerstatistik - Graphen');
         if ($action == 'tracked')
-            Navigation::activateItem('/benutzerstatistik/graphs/tracked-'.Request::int('id'));
+            Navigation::activateItem('/benutzerstatistik/graphs/tracked-'.Request::int('id', reset($args)));
         else
             Navigation::activateItem('/benutzerstatistik/graphs/'.$action);
 
