@@ -28,7 +28,7 @@
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @package     IBIT_StudIP
  * @subpackage  BenutzerStatistik
- * @version     2.4.5.2
+ * @version     2.4.6
  */
 
 require_once 'bootstrap.php';
@@ -103,9 +103,10 @@ class BenutzerStatistik extends StudipPlugin implements SystemPlugin {
             'admin'             => _('Administration'),
         );
 
-        // TODO This could be a config thingy
-        if (!empty($GLOBALS['STUDIP_INSTALLATION_ID']) and $GLOBALS['STUDIP_INSTALLATION_ID']=='uni-ol') {
-            $tabs['munin'] = 'Munin';
+        $config = Config::GetInstance();
+        if ($config['BENUTZERSTATISTIK_EXTRA_TAB']) {
+            $extra_tab = unserialize($config['BENUTZERSTATISTIK_EXTRA_TAB']);
+            $tabs['extra'] = $extra_tab['title'];
         }
 
         foreach ($tabs as $key => $name) {

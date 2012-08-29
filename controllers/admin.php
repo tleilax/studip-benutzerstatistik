@@ -20,6 +20,9 @@ class AdminController extends StudipController{
         $this->days_to_summarize = DBManager::Get()->query("SELECT COUNT(DISTINCT daystamp) AS quantity FROM user_statistics WHERE daystamp<=LAST_DAY(TIMESTAMPADD(MONTH, -1, NOW())) AND daystamp<=TIMESTAMPADD(DAY, -2, NOW())")->fetchColumn();
         $this->internal_ip_mask = $config['BENUTZERSTATISTIK_INTERNAL_IP_MASK'];
         $this->store_hits       = (bool) $config['BENUTZERSTATISTIK_STORE_HITS'];
+        $this->extra_tab        = $config['BENUTZERSTATISTIK_EXTRA_TAB']
+                                ? unserialize($config['BENUTZERSTATISTIK_EXTRA_TAB'])
+                                : array();
 
         $this->tracked_urls     = array_map('reset', DBManager::Get()->query("SELECT url_id, url, description, active FROM user_statistics_tracked_urls_config ORDER BY url_id ASC")->fetchAll(PDO::FETCH_GROUP));
     }
@@ -102,6 +105,33 @@ class AdminController extends StudipController{
         new BenutzerStatistik_Summarizer();
 
         $this->flash['success'] = _('Die Daten wurden erfolgreich zusammengefasst.');
+        $this->redirect('admin/index');
+    }
+
+    public function extra_tab_action()
+    {
+        $config = Config::GetInstance();
+
+        $extra_tab = array(
+            'title' => Request::get('extra-tab-title'),
+            'url'   => Request::get('extra-tab-url'),
+        );
+        $extra_tab = array_filter($extra_tab);
+
+        if (count($extra_tab) === 2) {
+            try {
+                $config->store('BENUTZERSTATISTIK_EXTRA_TAB', serialize($extra_tab));
+            } catch (Exception $e) {
+                $config->create('BENUTZERSTATISTIK_EXTRA_TAB', array('value' => serialize($extra_tab)));
+            }
+            $this->flash['success'] = _('Der zusätzliche Tab wurde erfolgreich gespeichert.');
+        } else if (count($extra_tab) === 1) {
+            $this->flash['error'] = _('Bitte geben Sie sowohl einen Titel als auch eine URL für den zusätzlichen Tab an.');
+        } else {
+            $config->delete('BENUTZERSTATISTIK_EXTRA_TAB');
+            $this->flash['success'] = _('Der zusätzliche Tab wurde erfolgreich entfernt.');
+        }
+
         $this->redirect('admin/index');
     }
 }

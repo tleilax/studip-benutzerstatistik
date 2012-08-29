@@ -1,5 +1,7 @@
 <?php if ($flash['success']): ?>
     <?= Messagebox::success($flash['success']) ?>
+<?php elseif ($flash['error']): ?>
+    <?= Messagebox::error($flash['error']) ?>
 <?php endif; ?>
 
 <form id="usadmin" action="<?= $controller->url_for('admin/config') ?>" method="post">
@@ -107,6 +109,30 @@
 
         <div class="type-button">
             <?= makebutton('eintragen', 'input', null, 'add_url') ?>
+        </div>
+    </fieldset>
+</form>
+
+<form action="<?= $controller->url_for('admin/extra_tab') ?>" method="post">
+    <fieldset>
+        <legend><?= _('Zusätzlichen Tab einfügen') ?></legend>
+        
+        <div class="type-text">
+            <label for="extra-tab-title">Titel:</label>
+            <input type="text" name="extra-tab-title" id="extra-tab-title"
+                   value="<?= htmlReady(Request::get('extra-tab-title', @$extra_tab['title'])) ?>"
+                   style="width:400px">
+        </div>
+        
+        <div class="type-text">
+            <label for="extra-tab-url">URL:</label>
+            <input type="text" name="extra-tab-url" id="extra-tab-url"
+                   value="<?= htmlReady(Request::get('extra-tab-url', @$extra_tab['url'])) ?>"
+                   style="width:400px">
+        </div>
+        
+        <div class="type-button">
+            <?= makebutton('speichern', 'input', null, 'extra_tab') ?>
         </div>
     </fieldset>
 </form>
