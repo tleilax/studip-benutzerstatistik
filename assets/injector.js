@@ -4,6 +4,11 @@ $('a[href]:not(.no-track)').live('click',function(){
         id = urls[href],
         url = STUDIP.URLHelper.getURL('plugins.php/benutzerstatistik/tracker/url');
     if (typeof id !== 'undefined') {
-        $(this).attr('href',  url + '/' + id);
+        if ($(this).attr('target') === '_blank') {
+            window.open(url + '/' + id);
+        } else {
+            location.href = url + '/' + id;
+        }
+        return false;
     }
 });
