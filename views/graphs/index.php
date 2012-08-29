@@ -54,12 +54,12 @@
             </td>
             <td>
                 <div class="visits" <?=$type!='visits'?' style="display: none;"':''?>>
-                    &Oslash;/<?=_('Tag')?>: <?=number_format($average['visits'], 2, ',', '.')?><br/>
-                    &Oslash;/<?=_('Tag')?>: <?=number_format($average['headcount'], 2, ',', '.')?><br/>
+                    &Oslash;/<?=_('Tag')?>: <?=number_format($totals['visits'] / $max_days, 2, ',', '.')?><br/>
+                    &Oslash;/<?=_('Tag')?>: <?=number_format($average['headcount'] / $max_days, 2, ',', '.')?><br/>
                 </div>
             <?php if ($show_hits): ?>
                 <div class="hits" <?=$type!='hits'?' style="display: none;"':''?>>
-                    &Oslash;/<?=_('Tag')?>: <?=number_format($average['hits'], 2, ',', '.')?><br/>
+                    &Oslash;/<?=_('Tag')?>: <?=number_format($totals['hits'] / $max_days, 2, ',', '.')?><br/>
                 </div>
             <?php endif; ?>
             </td>

@@ -72,39 +72,39 @@ class GraphsController extends StudipController
 
         $max = array();
         $average = array(
-            'visits'=>0,
             'headcount'=>0,
-            'hits'=>0
         );
         $average_count = 0;
-        foreach ($stats as $stat)
-            foreach ($stat as $permission)
-            {
-                foreach ($permission as $index=>$value)
-                {
+        foreach ($stats as $stat) {
+            foreach ($stat as $type => $data) {
+                foreach ($data as $index => $value) {
                     if (empty($max[$index]))
                         $max[$index] = 0;
                     $max[$index] = max($max[$index], $value);
 
-                    $average[$index] += $value;
+                    if ($type === 'total' && $index === 'headcount')  {
+                        $average[$index] += $value;
+                    }
                 }
-                $average_count++;
             }
-        foreach ($average as $index=>$value)
-            $average[$index] = $average_count>0 ? $value/$average_count : 0;
+        }
 
         // TODO: Hier anpassen
         $totals['headcount'] = DBManager::Get()->query("SELECT MAX(headcount)+0 FROM (SELECT COUNT(DISTINCT hash) AS headcount FROM user_statistics WHERE daystamp BETWEEN FROM_UNIXTIME(".mktime(0,0,0,$month,1,$year).") AND FROM_UNIXTIME(".(mktime(0,0,0,$month+1,1,$year)-1).") UNION SELECT unique_visits AS headcount FROM user_statistics_monthly WHERE month_stamp=LAST_DAY(FROM_UNIXTIME(".mktime(0,0,0,$month,1,$year)."))) AS tmp_table")->fetchColumn();
 
-        $this->type = empty($_REQUEST['type']) ? 'visits' : $_REQUEST['type'];
-        $this->months = $months;
-        $this->month_stamp = mktime(0,0,0, $month, 1, $year);
-        $this->stats = $stats;
-        $this->max = $max;
-        $this->totals = $totals;
-        $this->average = $average;
+        $this->type         = $_REQUEST['type'] ?: 'visits';
+        $this->months       = $months;
+        $this->month_stamp  = mktime(0, 0, 0, $month, 1, $year);
+        $this->stats        = $stats;
+        $this->max          = $max;
+        $this->totals       = $totals;
+        $this->average      = $average;
         $this->visits_scale = $this->getScale($max['visits']);
-        $this->hits_scale = $this->getScale($max['hits']);
+        $this->hits_scale   = $this->getScale($max['hits']);
+        $this->max_days     = $year . $month === date('Ym')
+                            ? date('j')
+                            : date('t', mktime(0, 0, 0, $month, 1, $year));
+        
     }
 
     public function quarterly_action()
