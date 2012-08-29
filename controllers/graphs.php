@@ -281,8 +281,11 @@ class GraphsController extends StudipController
             $head_count[ $row['month'] ] = $row['head_count'];
             $max_headcount = max($max_headcount, $row['head_count']);
             $average_headcount += $row['head_count'];
-            $total_headcount += $row['head_count'];
         }
+
+        $statement = DBManager::get()->prepare("SELECT COUNT(DISTINCT `user_hash`) FROM user_statistics_tracked_urls WHERE daystamp BETWEEN FROM_UNIXTIME(?) AND FROM_UNIXTIME(?) AND url_id = ?");
+        $statement->execute(array($start_date, $end_date, $id));
+        $total_headcount = $statement->fetchColumn();
 
         $average = count($months)
                  ? $average / count($months)
