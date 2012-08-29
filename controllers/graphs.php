@@ -285,8 +285,12 @@ class GraphsController extends StudipController
             $total_headcount += $row['head_count'];
         }
 
-        $average /= count($months);
-        $average_headcount /= count($head_count);
+        $average = count($months)
+                 ? $average / count($months)
+                 : 0;
+        $average_headcount = count($head_count)
+                           ? $average_headcount / count($head_count)
+                           : 0;
 
         $this->id = $id;
         $this->months = $months;
