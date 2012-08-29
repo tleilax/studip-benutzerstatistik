@@ -51,4 +51,8 @@ class StatsController extends StudipController
 
         $this->data = $data;
     }
+    
+    function files_action () {
+        $this->data = DBManager::get()->query("SELECT COUNT(*) AS total, SUM(filesize) AS size FROM dokumente")->fetch(PDO::FETCH_ASSOC);
+    }
 }

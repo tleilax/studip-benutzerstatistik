@@ -94,6 +94,7 @@ class BenutzerStatistik extends StudipPlugin implements SystemPlugin {
             'stats/index'       => _('Heute'),
             'stats/yesterday'   => _('Gestern'),
             'stats/total'       => _('Gesamt'),
+            'stats/files'       => _('Dateien'),
 #            'stats/system'      => _('Systemweit'),
             'graphs'            => _('Graphen'),
             'graphs/index'      => _('Monatlich'),
