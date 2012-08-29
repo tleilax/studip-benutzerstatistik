@@ -5,7 +5,7 @@
 // BenutzerStatistik_Plugin.class.php
 // Part of the StudIP BenutzerStatistik Plugin
 //
-// Copyright (c) 2008-2011 Jan-Hendrik Willms <tleilax+studip@gmail.com>
+// Copyright (c) 2008-2012 Jan-Hendrik Willms <tleilax+studip@gmail.com>
 // +---------------------------------------------------------------------------+
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @package     IBIT_StudIP
  * @subpackage  BenutzerStatistik
- * @version     2.4.3.1
+ * @version     2.4.5.2
  */
 
 require_once 'bootstrap.php';
