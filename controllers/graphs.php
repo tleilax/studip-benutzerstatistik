@@ -6,7 +6,6 @@ class GraphsController extends StudipController
      */
     public function before_filter(&$action, &$args) {
         $this->plugin = $this->dispatcher->plugin;
-        $this->flash = Trails_Flash::instance();
 
         // set default layout
         $layout = $GLOBALS['template_factory']->open('layouts/base_without_infobox');

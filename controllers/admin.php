@@ -4,8 +4,6 @@ class AdminController extends StudipController{
      * Common code for all actions: set default layout and page title.
      */
     public function before_filter(&$action, &$args) {
-        $this->flash = Trails_Flash::instance();
-
         // set default layout
         $layout = $GLOBALS['template_factory']->open('layouts/base_without_infobox');
         $this->set_layout($layout);
@@ -40,7 +38,7 @@ class AdminController extends StudipController{
             $config->create('BENUTZERSTATISTIK_STORE_HITS', Request::get('store_hits'));
         }
 
-        $this->flash['success'] = _('Die Einstellungen wurden erfolgreich gespeichert.');
+        PageLayout::postMessage(Messagebox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
         $this->redirect('admin/index');
     }
 
@@ -58,7 +56,7 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        $this->flash['success'] = _('Die Einstellungen wurden erfolgreich gespeichert.');
+        PageLayout::postMessage(Messagebox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
         $this->redirect('admin/index');
     }
 
@@ -75,7 +73,7 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        $this->flash['success'] = _('Die URL wurde erfolgreich eingetragen.');
+        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich eingetragen.')));
         $this->redirect('admin/index');
     }
 
@@ -83,7 +81,7 @@ class AdminController extends StudipController{
         $statement = DBManager::get()->prepare("DELETE FROM `user_statistics_tracked_urls` WHERE `url_id` = ?");
         $statement->execute(array($id));
 
-        $this->flash['success'] = _('Die URL wurde erfolgreich zurückgesetzt');
+        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich zurückgesetzt')));
         $this->redirect('admin/index');
     }
 
@@ -97,14 +95,14 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        $this->flash['success'] = _('Die URL wurde erfolgreich gelöscht');
+        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich gelöscht')));
         $this->redirect('admin/index');
     }
 
     public function summarize_action() {
         new BenutzerStatistik_Summarizer();
 
-        $this->flash['success'] = _('Die Daten wurden erfolgreich zusammengefasst.');
+        PageLayout::postMessage(Messagebox::success(_('Die Daten wurden erfolgreich zusammengefasst.')));
         $this->redirect('admin/index');
     }
 
@@ -124,14 +122,15 @@ class AdminController extends StudipController{
             } catch (Exception $e) {
                 $config->create('BENUTZERSTATISTIK_EXTRA_TAB', array('value' => serialize($extra_tab)));
             }
-            $this->flash['success'] = _('Der zusätzliche Tab wurde erfolgreich gespeichert.');
+            $message = Messagebox::success(_('Der zusätzliche Tab wurde erfolgreich gespeichert.'));
         } else if (count($extra_tab) === 1) {
-            $this->flash['error'] = _('Bitte geben Sie sowohl einen Titel als auch eine URL für den zusätzlichen Tab an.');
+            $message = Messagebox::error(_('Bitte geben Sie sowohl einen Titel als auch eine URL für den zusätzlichen Tab an.'));
         } else {
             $config->delete('BENUTZERSTATISTIK_EXTRA_TAB');
-            $this->flash['success'] = _('Der zusätzliche Tab wurde erfolgreich entfernt.');
+            $message = Messagebox::success(_('Der zusätzliche Tab wurde erfolgreich entfernt.'));
         }
 
+        PageLayout::postMessage($message);
         $this->redirect('admin/index');
     }
 }

@@ -28,7 +28,7 @@
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @package     IBIT_StudIP
  * @subpackage  BenutzerStatistik
- * @version     2.4.7
+ * @version     2.5
  */
 
 require_once 'bootstrap.php';

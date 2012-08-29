@@ -1,9 +1,3 @@
-<?php if ($flash['success']): ?>
-    <?= Messagebox::success($flash['success']) ?>
-<?php elseif ($flash['error']): ?>
-    <?= Messagebox::error($flash['error']) ?>
-<?php endif; ?>
-
 <form id="usadmin" action="<?= $controller->url_for('admin/config') ?>" method="post">
     <fieldset>
         <legend><?= _('Einstellungen') ?>:</legend>

@@ -6,8 +6,6 @@ class ExtraController extends StudipController
      */
     public function before_filter(&$action, &$args)
     {
-        $this->flash = Trails_Flash::instance();
-
         // set default layout
         $layout = $GLOBALS['template_factory']->open('layouts/base_without_infobox');
         $this->set_layout($layout);

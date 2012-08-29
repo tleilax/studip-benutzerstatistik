@@ -5,8 +5,8 @@ class StatsController extends StudipController
      * Common code for all actions: set default layout and page title.
      */
     function before_filter(&$action, &$args) {
-        $this->flash = Trails_Flash::instance();
         $this->plugin = $this->dispatcher->plugin;
+
         // set default layout
         $layout = $GLOBALS['template_factory']->open('layouts/base_without_infobox');
         $this->set_layout($layout);
