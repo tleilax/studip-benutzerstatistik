@@ -75,12 +75,11 @@ tbody.collapsed tr:first-child {
 
 /* OLD STUFF */
 .stats_marker {
-    float: left;
-    margin-top: 0.4em;
-    margin-right: 4px;
-    border: 1px solid black;
-    width: 20px;
+    border: 1px solid #000;
+    display: inline-block;
     height: 5px;
+    vertical-align: middle;
+    width: 20px;
 }
 .stats_bar div ,.stats_bar_big div {
     position: absolute;
@@ -102,14 +101,17 @@ tbody.collapsed tr:first-child {
     font-size: 0.8em;
     height: 1em;
     line-height: 1em;
-    padding: 0px;
+    padding: 0px !important;
     margin-bottom: 1px;
+    text-shadow: 0 0 1px #888;
 }
 
 .visits .stats_marker, .stats_bar .visits, .stats_bar_big .visits, .year_marker.visits  {
     background-color: green;
 }
-.visits .stats_marker.headcount, .stats_bar .headcount, .stats_bar_big .headcount, .year_marker.headcount {
+.visits .stats_marker.headcount, .stats_bar .headcount, .stats_bar_big .headcount, .year_marker.headcount,
+.visits .stats_marker.uniquevisits, .stats_bar .uniquevisits, .stats_bar_big .uniquevisits, .year_marker.uniquevisits,
+.uniquevisits .stats_marker {
     background-color: lightgreen;
 }
 .hits .stats_marker, .stats_bar .hits, .stats_bar_big .hits, .year_marker.hits {
@@ -166,3 +168,11 @@ form fieldset .type-button {
 tr.bordered td {
     border-bottom: 1px solid black;
 }
+
+table.user-stats th {
+    text-align: center;
+}
+
+.user-stats .unknown { background-image: url(<?= $path ?>bg_dotted.gif); }
+.user-stats .admin   { background-image: url(<?= $path ?>bg_diagonal.gif); }
+.user-stats .teacher { background-image: url(<?= $path ?>bg_diagonal2.gif); }
