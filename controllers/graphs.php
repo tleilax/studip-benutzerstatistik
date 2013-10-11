@@ -103,7 +103,7 @@ class GraphsController extends StudipController
         $this->max_days     = $year . $month === date('Ym')
                             ? date('j')
                             : date('t', mktime(0, 0, 0, $month, 1, $year));
-        
+
     }
 
     public function quarterly_action()
@@ -347,16 +347,17 @@ class GraphsController extends StudipController
 
     private function getAggregatedStatistics($start_date, $end_date)
     {
-        $totals = $max = $average = array(
+        $totals = $average = array(
             'visits'       => 0,
             'uniquevisits' => 0,
             'hits'         => 0,
+            'internal'     => 0,
         );
+        $max = array_fill_keys(array_keys($totals), array());
 
         $months = array();
         $rows = DBManager::Get()->query("SELECT month, permission, visits, uniquevisits, hits FROM (SELECT MONTH(daystamp) AS month, permission, COUNT(*) AS visits, COUNT(DISTINCT hash) AS uniquevisits, SUM(hits) AS hits, SUM(internal) AS internal FROM user_statistics WHERE daystamp BETWEEN FROM_UNIXTIME({$start_date}) AND FROM_UNIXTIME({$end_date}) GROUP BY MONTH(daystamp), permission UNION SELECT MONTH(month_stamp) AS month, permission, SUM(visits) AS visits, SUM(unique_visits) AS uniquevisits, SUM(hits) AS hits, SUM(internal) AS internal FROM user_statistics_monthly WHERE month_stamp BETWEEN FROM_UNIXTIME({$start_date}) AND FROM_UNIXTIME({$end_date}) GROUP BY MONTH(month_stamp), permission) AS tmp_table")->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($rows as $row)
-        {
+        foreach ($rows as $row) {
             if (!isset($months[ $row['month'] ]))
                 $months[ $row['month'] ] = array(
                     'total' => array(
@@ -373,13 +374,19 @@ class GraphsController extends StudipController
                 'internal'     => $row['internal'],
             );
 
-            foreach (array('visits', 'uniquevisits', 'hits', 'interval') as $key)
-            {
-                $max[$key]      = max($max[$key], $row[$key]);
+            foreach (array('visits', 'uniquevisits', 'hits', 'interval') as $key) {
+                if (!isset($max[$key][$row['month']])) {
+                    $max[$key][$row['month']] = 0;
+                }
+                $max[$key][$row['month']] += $row[$key];
                 $average[$key] += $row[$key];
                 $totals[$key]  += $row[$key];
                 $months[ $row['month'] ]['total'][$key] += $row[$key];
             }
+        }
+
+        foreach ($max as $key => $values) {
+            $max[$key] = empty($values) ? 0 : max($values);
         }
 
         foreach (array_keys($average) as $index)
