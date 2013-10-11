@@ -4,41 +4,44 @@ class GraphsController extends StudipController
     /**
      * Common code for all actions: set default layout and page title.
      */
-    public function before_filter(&$action, &$args) {
+    public function before_filter(&$action, &$args)
+    {
+        parent::before_filter($action, $args);
+
+        if ($action === 'monthly') {
+            $action = 'index';
+        }
+
         $this->plugin = $this->dispatcher->plugin;
 
         // set default layout
-        $layout = $GLOBALS['template_factory']->open('layouts/base_without_infobox');
-        $this->set_layout($layout);
+        $this->set_layout($GLOBALS['template_factory']->open('layouts/base_without_infobox'));
 
 
         PageLayout::setTitle('Benutzerstatistik - Graphen');
-        if ($action == 'tracked')
+        if ($action == 'tracked') {
             Navigation::activateItem('/benutzerstatistik/graphs/tracked-'.Request::int('id', reset($args)));
-        else
+        } else {
             Navigation::activateItem('/benutzerstatistik/graphs/'.$action);
-
+        }
 
         $this->image_path = $this->plugin->getPluginURL().'/assets/images/';
         $this->show_hits = Config::GetInstance()->getValue('BENUTZERSTATISTIK_STORE_HITS');
     }
 
-    public function index_action()
+    public function index_action($year = null, $month = null)
     {
         $month_names = BenutzerStatistik_Helper::getMonthNames();
 
-        if (empty($_GET['month']))
-        {
-            $month = date('n');
-            $year = date('Y');
-        }
-        else
+        if (!empty($_GET['month'])) {
             list($year, $month) = explode('-', $_GET['month']);
+        }
+        $month = $month ?: date('n');
+        $year  = $year ?: date('Y');
 
         $months = array();
         $rows = DBManager::Get()->query("SELECT DISTINCT month_stamp FROM (SELECT DISTINCT DATE_FORMAT(daystamp, '%Y-%c') AS month_stamp FROM user_statistics UNION SELECT DISTINCT DATE_FORMAT(daystamp, '%Y-%c') AS month_stamp FROM user_statistics_daily) AS tmp_table ORDER BY month_stamp DESC")->fetchAll(PDO::FETCH_COLUMN);
-        foreach ($rows as $month_stamp)
-        {
+        foreach ($rows as $month_stamp) {
             list($y, $m) = explode('-', $month_stamp);
             $months[$month_stamp] = $month_names[$m].' '.$y;
         }
@@ -211,21 +214,34 @@ class GraphsController extends StudipController
 
     public function uni_yearly_action()
     {
-        $years = DBManager::Get()->query("SELECT DISTINCT year FROM (SELECT DISTINCT YEAR(TIMESTAMPADD(MONTH, -9, daystamp)) AS year FROM user_statistics UNION SELECT DISTINCT YEAR(TIMESTAMPADD(MONTH, -9, month_stamp)) AS year FROM user_statistics_monthly) AS tmp_table ORDER BY year DESC")->fetchAll(PDO::FETCH_COLUMN);
+        $query = "SELECT DISTINCT year FROM (
+                      SELECT DISTINCT YEAR(TIMESTAMPADD(MONTH, -9, daystamp)) AS year
+                      FROM user_statistics
 
-        $year = empty($_GET['year']) ? date('Y', strtotime('-9 months')) : $_GET['year'];
+                      UNION
 
-        $start_date = mktime(0,0,0,10,1,$year);
-        $end_date = mktime(23,59,59,9,30,$year+1);
+                      SELECT DISTINCT YEAR(TIMESTAMPADD(MONTH, -9, month_stamp)) AS year
+                      FROM user_statistics_monthly
+                  ) AS tmp_table
+                  ORDER BY year DESC";
+        $years = DBManager::get()->query($query)->fetchAll(PDO::FETCH_COLUMN);
+
+        $year = $_GET['year'] ?: date('Y', strtotime('-9 months'));
+
+        $start_date = mktime( 0,  0,  0, 10,  1, $year);
+        $end_date   = mktime(23, 59, 59,  9, 30, $year + 1);
         $this->getAggregatedStatistics($start_date, $end_date);
 
-        $this->years = $years;
-        $this->year = $year;
+        $areas = array('visits', 'uniquevisits');
+        if ($this->show_hits) {
+            $areas[] = 'hits';
+        }
+
+        $this->areas      = $areas;
+        $this->years      = $years;
+        $this->year       = $year;
         $this->start_date = $start_date;
-        $this->end_date = $end_date;
-        $this->links = array(
-            'monthly' => PluginEngine::getLink('benutzerstatistik/graphs/index'),
-        );
+        $this->end_date   = $end_date;
         $this->monthnames = BenutzerStatistik_Helper::getMonthNames();
     }
 
@@ -393,6 +409,8 @@ class GraphsController extends StudipController
             $average[$index] /= count($months);
 
         $totals['uniquevisits'] = DBManager::Get()->query("SELECT COUNT(DISTINCT hash) FROM (SELECT DISTINCT hash FROM user_statistics WHERE daystamp BETWEEN FROM_UNIXTIME({$start_date}) AND FROM_UNIXTIME({$end_date}) UNION SELECT DISTINCT hash FROM user_statistics_uniqueusers_monthly WHERE DATE(CONCAT(year,'-',month,'-1')) BETWEEN FROM_UNIXTIME({$start_date}) AND FROM_UNIXTIME({$end_date})) AS tmp_table")->fetchColumn();
+
+        $max['uniquevisits'] = $max['visits'];
 
         $this->months = $months;
         $this->max = $max;

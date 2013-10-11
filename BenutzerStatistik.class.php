@@ -78,7 +78,7 @@ class BenutzerStatistik extends StudipPlugin implements SystemPlugin {
         }
 
         $css_file = $this->getPluginPath().'/assets/benutzerstatistik.css';
-        if (!file_exists($css_file)) {
+        if (!file_exists($css_file) or filemtime($this->getPluginPath() . '/templates/css.php') > filemtime($css_file)) {
             $css = $this->render('templates/css.php', array(
                 'path' => $this->getPluginURL().'/assets/images/',
             ));

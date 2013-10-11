@@ -1,13 +1,13 @@
 <div style="float: left; width: 25%;">
-    <div class="stats_marker" style="background-image: url(<?= $image_path ?>bg_dotted.gif);">&nbsp;</div>
+    <div class="stats_marker unknown">&nbsp;</div>
     <?= _('Unbekannt') ?>
 </div>
 <div style="float: left; width: 25%;">
-    <div class="stats_marker" style="background-image: url(<?= $image_path ?>bg_diagonal.gif);">&nbsp;</div>
+    <div class="stats_marker admin">&nbsp;</div>
     <?= _('Admins') ?>
 </div>
 <div style="float: left; width: 25%;">
-    <div class="stats_marker" style="background-image: url(<?= $image_path ?>bg_diagonal2.gif);">&nbsp;</div>
+    <div class="stats_marker teacher">&nbsp;</div>
     <?= _('Dozenten') ?>
 </div>
 <div style="float: left; width: 25%;">
