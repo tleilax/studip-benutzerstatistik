@@ -3,4 +3,4 @@ pluginclassname=BenutzerStatistik
 dbscheme=sql/install.sql
 origin=UOL
 version=2.5.1
-studipMinVersion=2.2
+studipMinVersion=2.5

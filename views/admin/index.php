@@ -15,7 +15,7 @@
         </div>
 
         <div class="type-button">
-            <?= makebutton('absenden', 'input') ?>
+            <?= Studip\Button::createAccept(_('Speichern'), 'absenden') ?>
         </div>
     </fieldset>
 </form>
@@ -73,7 +73,7 @@
             <tfoot>
                 <tr class="steelgroup6" style="text-align:center">
                     <td colspan="5">
-                        <?= makebutton('speichern', 'input') ?>
+                        <?= Studip\Button::createAccept(_('Speichern'), 'speichern') ?>
                     </td>
                 </tr>
             </tfoot>
@@ -102,7 +102,7 @@
         </div>
 
         <div class="type-button">
-            <?= makebutton('eintragen', 'input', null, 'add_url') ?>
+            <?= Studip\Button::createAccept(_('Eintragen'), 'add_url') ?>
         </div>
     </fieldset>
 </form>
@@ -110,36 +110,41 @@
 <form action="<?= $controller->url_for('admin/extra_tab') ?>" method="post">
     <fieldset>
         <legend><?= _('Zusätzlichen Tab einfügen') ?></legend>
-        
+
         <div class="type-text">
             <label for="extra-tab-title">Titel:</label>
             <input type="text" name="extra-tab-title" id="extra-tab-title"
                    value="<?= htmlReady(Request::get('extra-tab-title', @$extra_tab['title'])) ?>"
                    style="width:400px">
         </div>
-        
+
         <div class="type-text">
             <label for="extra-tab-url">URL:</label>
             <input type="text" name="extra-tab-url" id="extra-tab-url"
                    value="<?= htmlReady(Request::get('extra-tab-url', @$extra_tab['url'])) ?>"
                    style="width:400px">
         </div>
-        
+
         <div class="type-button">
-            <?= makebutton('speichern', 'input', null, 'extra_tab') ?>
+            <?= Studip\Button::createAccept(_('Speichern'), 'extra_tab') ?>
         </div>
     </fieldset>
 </form>
 
+<? if (!Config::get()->CRONJOBS_ENABLE): ?>
 <form action="<?= $controller->url_for('admin/summarize') ?>" method="post">
     <fieldset>
         <legend><?= _('Zusammenfassung der Daten') ?>:</legend>
+
+        <?= MessageBox::info(_('Diese Aufgabe kann auch durch einen Cronjob regelmässig ausgeführt werden. Allerdings sind die Cronjobs momentan deaktiviert.')) ?>
+
         <div class="type-text">
             <?= sprintf(_('Es können %s Tage zusammengefasst werden'), number_format($days_to_summarize, 0, ',', '.')) ?>.
         <?php if ($days_to_summarize): ?>
             <br>
-            <button>&raquo; <?= _('Statistiken jetzt zusammenfassen') ?></button>
+            <?= Studip\Button::create(_('Statistiken jetzt zusammenfassen')) ?>
         <?php endif; ?>
         </div>
     </fieldset>
 </form>
+<? endif; ?>
