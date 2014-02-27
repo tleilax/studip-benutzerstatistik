@@ -123,6 +123,9 @@ class BenutzerStatistik_Helper {
             } elseif (preg_match('~(Nokia|SonyEricsson|iPhone|iPad|BlackBerry|\bLG)~', $agent, $matches)) {
                 $agent = 'Mobile';
                 $version = $matches[1];
+            } elseif (preg_match('~Windows.*Trident.*rv:(\d+\.\d+)~', $agent, $matches)) {
+                $agent   = 'MSIE';
+                $version = $matches[1];
             } else {
                 $version = $agent;
                 $agent = _('unbekannt');
