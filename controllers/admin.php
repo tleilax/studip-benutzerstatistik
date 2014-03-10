@@ -38,7 +38,7 @@ class AdminController extends StudipController{
             $config->create('BENUTZERSTATISTIK_STORE_HITS', Request::get('store_hits'));
         }
 
-        PageLayout::postMessage(Messagebox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
+        PageLayout::postMessage(MessageBox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
         $this->redirect('admin/index');
     }
 
@@ -56,7 +56,7 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        PageLayout::postMessage(Messagebox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
+        PageLayout::postMessage(MessageBox::success(_('Die Einstellungen wurden erfolgreich gespeichert.')));
         $this->redirect('admin/index');
     }
 
@@ -73,7 +73,7 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich eingetragen.')));
+        PageLayout::postMessage(MessageBox::success(_('Die URL wurde erfolgreich eingetragen.')));
         $this->redirect('admin/index');
     }
 
@@ -81,7 +81,7 @@ class AdminController extends StudipController{
         $statement = DBManager::get()->prepare("DELETE FROM `user_statistics_tracked_urls` WHERE `url_id` = ?");
         $statement->execute(array($id));
 
-        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich zurückgesetzt')));
+        PageLayout::postMessage(MessageBox::success(_('Die URL wurde erfolgreich zurückgesetzt')));
         $this->redirect('admin/index');
     }
 
@@ -95,14 +95,14 @@ class AdminController extends StudipController{
         StudipCacheFactory::getCache()
             ->expire(BenutzerStatistik::CACHE_KEY_TRACKED_URLS);
 
-        PageLayout::postMessage(Messagebox::success(_('Die URL wurde erfolgreich gelöscht')));
+        PageLayout::postMessage(MessageBox::success(_('Die URL wurde erfolgreich gelöscht')));
         $this->redirect('admin/index');
     }
 
     public function summarize_action() {
         new BenutzerStatistik_Summarizer();
 
-        PageLayout::postMessage(Messagebox::success(_('Die Daten wurden erfolgreich zusammengefasst.')));
+        PageLayout::postMessage(MessageBox::success(_('Die Daten wurden erfolgreich zusammengefasst.')));
         $this->redirect('admin/index');
     }
 
@@ -122,12 +122,12 @@ class AdminController extends StudipController{
             } catch (Exception $e) {
                 $config->create('BENUTZERSTATISTIK_EXTRA_TAB', array('value' => serialize($extra_tab)));
             }
-            $message = Messagebox::success(_('Der zusätzliche Tab wurde erfolgreich gespeichert.'));
+            $message = MessageBox::success(_('Der zusätzliche Tab wurde erfolgreich gespeichert.'));
         } else if (count($extra_tab) === 1) {
-            $message = Messagebox::error(_('Bitte geben Sie sowohl einen Titel als auch eine URL für den zusätzlichen Tab an.'));
+            $message = MessageBox::error(_('Bitte geben Sie sowohl einen Titel als auch eine URL für den zusätzlichen Tab an.'));
         } else {
             $config->delete('BENUTZERSTATISTIK_EXTRA_TAB');
-            $message = Messagebox::success(_('Der zusätzliche Tab wurde erfolgreich entfernt.'));
+            $message = MessageBox::success(_('Der zusätzliche Tab wurde erfolgreich entfernt.'));
         }
 
         PageLayout::postMessage($message);
