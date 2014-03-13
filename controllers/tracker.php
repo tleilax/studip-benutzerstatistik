@@ -1,7 +1,7 @@
 <?php
 class TrackerController extends StudipController {
 
-    public function sniff_action($width, $height) {
+    public function sniff_action($width = 0, $height = 0) {
         DBManager::Get()
             ->prepare("UPDATE `user_statistics` SET `javascript` = 1, `screen_width` = ?, `screen_height` = ? WHERE `ip` = MD5(INET_ATON(?)) AND `user_agent` = ? AND TRIM(`hash`) = ? AND `daystamp` = CURDATE()")
             ->execute(array(
